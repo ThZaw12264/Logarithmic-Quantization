@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+#hey der
 import os
 for dirname, _, filenames in os.walk('/kaggle/input'):
     for filename in filenames:
