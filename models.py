@@ -9,7 +9,7 @@ import torchvision.transforms as transforms
 from torch.utils.tensorboard import SummaryWriter
 from datetime import datetime
 from quant_optimizer import no_quant, quantizationSGD
-
+from bfp_quantize import bfp_quantize, round_fp16
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -46,7 +46,7 @@ transform = transforms.Compose(
 # Create datasets for training & validation, download if necessary
 training_set = torchvision.datasets.FashionMNIST('./data', train=True, transform=transform, download=True)
 #uncomment this line to make training data set smaller
-training_set = torch.utils.data.Subset(training_set, range(5000))
+# training_set = torch.utils.data.Subset(training_set, range(5000))
 validation_set = torchvision.datasets.FashionMNIST('./data', train=False, transform=transform, download=True)
 
 # Create data loaders for our datasets; shuffle for training, not for validation
@@ -67,7 +67,8 @@ loss_fn = torch.nn.CrossEntropyLoss()
 
 # Optimizers specified in the torch.optim package
 optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-optimizer = quantizationSGD(optimizer,quant_func = no_quant)
+scale_factor = 1
+optimizer = quantizationSGD(optimizer, grad_scaling = scale_factor)
 
 
 
@@ -89,11 +90,14 @@ def train_one_epoch(epoch_index, tb_writer):
         outputs = model(inputs)
 
         # Compute the loss and its gradients
-        loss = loss_fn(outputs, labels)
+        loss = loss_fn(outputs, labels) * (1/scale_factor)
         loss.backward()
 
+     
         # Adjust learning weights
-        optimizer.step()
+        optimizer.step(i=i)
+        
+        loss = loss * (scale_factor)
 
         # Gather data and report
         running_loss += loss.item()
@@ -111,7 +115,7 @@ timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 writer = SummaryWriter('runs/fashion_trainer_{}'.format(timestamp))
 epoch_number = 0
 
-EPOCHS = 5
+EPOCHS = 10
 
 best_vloss = 1_000_000.
 
