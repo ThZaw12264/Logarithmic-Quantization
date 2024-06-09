@@ -14,9 +14,8 @@ def block_quantize(x, wl, dim=-1):
         sources=[
             os.path.join(current_path, "cpp_extention/quantization.cpp"),
             os.path.join(current_path, "cpp_extention/quantization_kernel.cu"),
-            os.path.join(current_path, "cpp_extention/helper_funct.cu"),
         ],
     )
 
-    out = quant_cuda.block_quantize_nearest(x.contiguous(), wl, dim)
+    out = quant_cuda.quantize_bfp(x.contiguous(), wl, dim)
     return out
