@@ -1,0 +1,12 @@
+optimizer:
+  lr: 0.001
+  momentum: 0.9
+  weight_quant: NONE
+  grad_quant: NONE
+  momentum_quant: bfp4
+  acc_quant: bfp8
+  grad_scaling: 1.0
+
+train:
+  batch_size: 64
+  epochs: 100
