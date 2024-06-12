@@ -68,7 +68,7 @@ loss_fn = torch.nn.CrossEntropyLoss()
 # Optimizers specified in the torch.optim package
 optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 scale_factor = 1
-optimizer = quantizationSGD(optimizer, grad_scaling = scale_factor)
+optimizer = quantizationSGD(optimizer,weight_quant = bfp_quantize, grad_quant= bfp_quantize, momentum_quant = bfp_quantize, grad_scaling = scale_factor)
 
 
 
