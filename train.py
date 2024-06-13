@@ -114,10 +114,6 @@ def train():
 
 
 if __name__ == '__MAIN__':
-    # with open('config.yaml') as file:
-    #     options = yaml.safe_load()
-
-
     model = GarmentClassifier()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9) #TODO: LR and momentum
     scale_factor = 1
