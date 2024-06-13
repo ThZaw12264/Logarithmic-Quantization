@@ -14,4 +14,4 @@ https://github.com/lessw2020/4bit_optimizers/tree/main
 1. Clone this repo
 2. Create a virtual environment
 3. Pip install the requirements.txt
-4. Run models.py
+4. Run train.py
